@@ -55,17 +55,11 @@ public class ExampleMod {
     //you probably will not need this
   }
 
-  private static final int LADDER_ROTATIONLIMIT = -78;
-  private static final double LADDER_SPEED = 0.10;
-  //
-  //
-  //
-
   @SubscribeEvent
   public void onInteract(PlayerInteractEvent.RightClickBlock event) {
     //
     PlayerEntity player = event.getPlayer();
-    //
+    //vine, ironbars, powered rails
     BlockPos pos = event.getPos();
     World world = event.getWorld();
     BlockState stateOG = world.getBlockState(pos);
