@@ -19,7 +19,7 @@ import groovy.json.JsonOutput
 
 version = "${mc_version}-${mod_version}"
 group = 'com.lothrazar.ladderpower' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'ladderpower'
+archivesBaseName = 'railladderpower'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
