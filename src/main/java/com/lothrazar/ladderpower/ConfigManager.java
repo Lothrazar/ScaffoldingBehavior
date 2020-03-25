@@ -21,7 +21,7 @@ public class ConfigManager {
   }
 
   private static void initConfig() {
-    COMMON_BUILDER.comment("General settings").push(ExampleMod.MODID);
+    COMMON_BUILDER.comment("General settings").push(LadderPowerMod.MODID);
     //    FASTUP = COMMON_BUILDER.comment(
     //        "While on a ladder and looking up, you will auto climb the ladder.  Still lets you sneak to stop moving.  Disable if you have auto-sprint or overlapping ladder features from other mods.   ")
     //        .define("ladder.autoClimbingUp", true);

@@ -7,7 +7,6 @@ import com.lothrazar.ladderpower.setup.IProxy;
 import com.lothrazar.ladderpower.setup.ServerProxy;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.GrassBlock;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
@@ -29,8 +28,8 @@ import net.minecraftforge.fml.loading.FMLPaths;
 
 // TODO: The value here should match an entry in the META-INF/mods.toml file
 // TODO: Also search and replace it in build.gradle
-@Mod(ExampleMod.MODID)
-public class ExampleMod {
+@Mod(LadderPowerMod.MODID)
+public class LadderPowerMod {
 
   public static final String MODID = "ladderpower";
   public static final String certificateFingerprint = "@FINGERPRINT@";
@@ -38,7 +37,7 @@ public class ExampleMod {
   public static final Logger LOGGER = LogManager.getLogger();
   public static ConfigManager config;
 
-  public ExampleMod() {
+  public LadderPowerMod() {
     // Register the setup method for modloading
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
     //only for server starting
@@ -72,8 +71,6 @@ public class ExampleMod {
         BlockPos posCurrent = pos.offset(facing, i);
         //here? 
         BlockState newLadder = Blocks.RAIL.getDefaultState();
-        //        newLadder = newLadder.with(RailBlock.SHAPE, stateOG.get(RailBlock.SHAPE));
-        GrassBlock x;
         boolean replaceHere = world.getBlockState(posCurrent).getMaterial().isReplaceable();
         //        System.out.println(replaceHere + " can be replaced " + world.getBlockState(posCurrent));
         if (replaceHere
@@ -101,7 +98,6 @@ public class ExampleMod {
         if (!stateCurrent.isAir() && stateCurrent.getBlock() != Blocks.WATER) {
           continue;
         }
-        LadderBlock b;
         BlockState newLadder = Blocks.LADDER.getDefaultState();
         newLadder = newLadder.with(LadderBlock.FACING, stateOG.get(LadderBlock.FACING));
         // ok 
@@ -122,21 +118,4 @@ public class ExampleMod {
       }
     }
   }
-  //
-  //  @SubscribeEvent
-  //  public void onPlayerTick(LivingUpdateEvent event) {
-  //    if (ConfigManager.FASTUP.get()) {
-  //      if (event.getEntityLiving() instanceof PlayerEntity) {
-  //        PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-  //        if (player.isOnLadder() && !player.isCrouching() && player.moveForward == 0) {
-  //          //move up faster without 'w'
-  //          if (ConfigManager.FASTUP.get() &&
-  //              player.rotationPitch < LADDER_ROTATIONLIMIT) {
-  //            //up 
-  //            player.addVelocity(0, LADDER_SPEED, 0);
-  //          }
-  //        }
-  //      }
-  //    }
-  //  }
 }
