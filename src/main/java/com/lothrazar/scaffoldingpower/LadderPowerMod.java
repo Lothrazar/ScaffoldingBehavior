@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -69,9 +70,14 @@ public class LadderPowerMod {
       for (int i = 1; i < ConfigManager.RAILSAUTOBUILDRANGE.get(); i++) {
         BlockPos posCurrent = pos.offset(facing, i);
         //UP AND DOWN HILLS
+        //        if(this.isRail(item))
         //here? 
         BlockState newRail = Block.getBlockFromItem(held.getItem()).getDefaultState();
-        boolean replaceHere = world.getBlockState(posCurrent).getMaterial().isReplaceable();
+        BlockState stateCurrent = world.getBlockState(posCurrent);
+        if (this.isRail(stateCurrent)) {
+          continue;//can skip past rails
+        }
+        boolean replaceHere = stateCurrent.getMaterial().isReplaceable();
         if (replaceHere
             && newRail.isValidPosition(world, posCurrent)) {
           if (world.setBlockState(posCurrent, newRail)) {
@@ -80,6 +86,10 @@ public class LadderPowerMod {
             }
             break;
           }
+        }
+        else {
+          // its not valid here, so break out, dont skip gaps
+          break;
         }
       }
     }
@@ -90,8 +100,9 @@ public class LadderPowerMod {
         // 
         BlockPos posCurrent = (player.rotationPitch < 0) ? pos.up(i) : pos.down(i);
         BlockState stateCurrent = world.getBlockState(posCurrent);
-        if (!stateCurrent.isAir() && stateCurrent.getBlock() != Blocks.WATER) {
-          continue;
+        if (//!stateCurrent.isAir() && stateCurrent.getBlock() != Blocks.WATER &&
+        stateCurrent.getBlock() == Blocks.LADDER) {
+          continue;// this is a ladder, skip to next
         }
         BlockState newLadder = Blocks.LADDER.getDefaultState();
         newLadder = newLadder.with(LadderBlock.FACING, stateOG.get(LadderBlock.FACING));
@@ -110,6 +121,10 @@ public class LadderPowerMod {
             break;
           }
         }
+        else {
+          //config is false AND its not valid here, so break out, dont skip gaps
+          break;
+        }
       }
     }
     //redstone time
@@ -120,6 +135,9 @@ public class LadderPowerMod {
         // 
         BlockPos posCurrent = pos.offset(facing, i);
         BlockState stateCurrent = world.getBlockState(posCurrent);
+        if (stateCurrent.getBlock() == Blocks.REDSTONE_WIRE) {
+          continue;//keep going to the next one this is ok to pass
+        }
         BlockState newWire = Blocks.REDSTONE_WIRE.getDefaultState();
         newWire = newWire.with(RedstoneWireBlock.NORTH, stateOG.get(RedstoneWireBlock.NORTH));
         newWire = newWire.with(RedstoneWireBlock.EAST, stateOG.get(RedstoneWireBlock.EAST));
@@ -135,11 +153,19 @@ public class LadderPowerMod {
             break;
           }
         }
+        else {
+          // its not valid here, so break out, dont skip gaps
+          break;
+        }
       }
     }
   }
 
   private boolean isRail(Item item) {
     return item.isIn(ItemTags.RAILS);
+  }
+
+  private boolean isRail(BlockState item) {
+    return item.getBlock().isIn(BlockTags.RAILS);
   }
 }

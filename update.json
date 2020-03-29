@@ -7,5 +7,6 @@
   "1.15.2": {
     "1.0.0": "Release ",
     "1.1.0":"Works with all four rail types equally using rails tag.  Added support for redstone dust.  New config for range limit on rail building.  Changed config and jarfile name."
+  	"1.2.0":"All supported blocks (ladders redstone rails) no longer continue past blocks or empty spaces, needs a clear path to build."
   }
 }
