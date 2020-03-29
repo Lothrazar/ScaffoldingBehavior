@@ -12,11 +12,11 @@ issueTrackerURL="https://github.com/Lothrazar/LadderPower/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
-modId="ladderpower" #mandatory
+modId="scaffoldingpower" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
 version="${file.jarVersion}" #mandatory
  # A display name for the mod
-displayName="Scaffolding power for rails and ladders Mod" #mandatory
+displayName="Scaffolding power" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 updateJSONURL="https://raw.githubusercontent.com/Lothrazar/LadderPower/master/update.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -29,12 +29,12 @@ credits="Thanks for this example mod goes to Java" #optional
 authors="Lothrazar" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-You can build multiple ladders and rails away from you in the expected direction.
+You can build multiple ladders, redstone and rails away from you in the expected direction.
 
 Implemented in a similar fashion to scaffoldings
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.ladderpower]] #optional
+[[dependencies.scaffoldingpower]] #optional
     # the modid of the dependency
     modId="forge" #mandatory
     # Does this dependency have to exist - if not, ordering below must be specified
@@ -46,7 +46,7 @@ Implemented in a similar fashion to scaffoldings
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
 # Here's another dependency
-[[dependencies.ladderpower]]
+[[dependencies.scaffoldingpower]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.15.2]"

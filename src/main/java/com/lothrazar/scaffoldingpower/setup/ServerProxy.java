@@ -1,4 +1,4 @@
-package com.lothrazar.ladderpower.setup;
+package com.lothrazar.scaffoldingpower.setup;
 
 import net.minecraft.world.World;
 

@@ -18,8 +18,8 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 version = "${mc_version}-${mod_version}"
-group = 'com.lothrazar.ladderpower' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'railladderpower'
+group = 'com.lothrazar.scaffoldingpower' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'scaffoldingpower'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -49,7 +49,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                ladderpower {
+                scaffoldingpower {
                     source sourceSets.main
                 }
             }
@@ -65,7 +65,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                ladderpower {
+                scaffoldingpower {
                     source sourceSets.main
                 }
             }
@@ -80,10 +80,10 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'ladderpower', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'scaffoldingpower', '--all', '--output', file('src/generated/resources/')
 
             mods {
-                ladderpower {
+                scaffoldingpower {
                     source sourceSets.main
                 }
             }
@@ -143,12 +143,12 @@ repositories {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "ladderpower",
-            "Specification-Vendor": "ladderpowersareus",
+            "Specification-Title": "",
+            "Specification-Vendor": "sareus",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"ladderpowersareus",
+            "Implementation-Vendor" :"sareus",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
