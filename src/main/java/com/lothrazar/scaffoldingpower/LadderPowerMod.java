@@ -63,100 +63,113 @@ public class LadderPowerMod {
     ItemStack held = event.getItemStack();
     if (ConfigManager.RAILBUILD.get() && this.isRail(held.getItem()) &&
         this.isRail(stateOG.getBlock().asItem())) {
-      Direction facing = player.getHorizontalFacing();
-      // ok then 
-      //      int yLevel = pos.getY();
-      //build 
-      for (int i = 1; i < ConfigManager.RAILSAUTOBUILDRANGE.get(); i++) {
-        BlockPos posCurrent = pos.offset(facing, i);
-        //UP AND DOWN HILLS
-        //        if(this.isRail(item))
-        //here? 
-        BlockState newRail = Block.getBlockFromItem(held.getItem()).getDefaultState();
-        BlockState stateCurrent = world.getBlockState(posCurrent);
-        if (this.isRail(stateCurrent)) {
-          continue;//can skip past rails
-        }
-        boolean replaceHere = stateCurrent.getMaterial().isReplaceable();
-        if (replaceHere
-            && newRail.isValidPosition(world, posCurrent)) {
-          if (world.setBlockState(posCurrent, newRail)) {
-            if (!player.isCreative()) {
-              held.shrink(1);
-            }
-            break;
-          }
-        }
-        else {
-          // its not valid here, so break out, dont skip gaps
-          break;
-        }
-      }
+      buildRails(player, pos, world, held);
     }
     //if i used ladder on top of a ladder
     if (ConfigManager.LADDERBUILD.get() && held.getItem() == Items.LADDER && stateOG.getBlock() == Blocks.LADDER) {
-      //then ooo hot stuff 
-      for (int i = 1; i < ConfigManager.LADDERBUILDRANGE.get(); i++) {
-        // 
-        BlockPos posCurrent = (player.rotationPitch < 0) ? pos.up(i) : pos.down(i);
-        BlockState stateCurrent = world.getBlockState(posCurrent);
-        if (//!stateCurrent.isAir() && stateCurrent.getBlock() != Blocks.WATER &&
-        stateCurrent.getBlock() == Blocks.LADDER) {
-          continue;// this is a ladder, skip to next
-        }
-        BlockState newLadder = Blocks.LADDER.getDefaultState();
-        newLadder = newLadder.with(LadderBlock.FACING, stateOG.get(LadderBlock.FACING));
-        // ok 
-        // build it!
-        if (ConfigManager.LADDERBUILDINVALID.get()
-            || newLadder.isValidPosition(world, posCurrent)) {
-          //water logged if its wet
-          boolean isWater = world.getFluidState(posCurrent).getFluid() == Fluids.WATER
-              || world.getFluidState(posCurrent).getFluid() == Fluids.FLOWING_WATER;
-          newLadder = newLadder.with(BlockStateProperties.WATERLOGGED, Boolean.valueOf(isWater));
-          if (world.setBlockState(posCurrent, newLadder)) {
-            if (!player.isCreative()) {
-              held.shrink(1);
-            }
-            break;
-          }
-        }
-        else {
-          //config is false AND its not valid here, so break out, dont skip gaps
-          break;
-        }
-      }
+      buildLadder(player, pos, world, stateOG, held);
     }
     //redstone time
     if (ConfigManager.REDSTONEBUILD.get() && held.getItem() == Items.REDSTONE && stateOG.getBlock() == Blocks.REDSTONE_WIRE) {
-      //then ooo hot stuff 
-      Direction facing = player.getHorizontalFacing();
-      for (int i = 1; i < ConfigManager.REDSTONEBUILDRANGE.get(); i++) {
-        // 
-        BlockPos posCurrent = pos.offset(facing, i);
-        BlockState stateCurrent = world.getBlockState(posCurrent);
-        if (stateCurrent.getBlock() == Blocks.REDSTONE_WIRE) {
-          continue;//keep going to the next one this is ok to pass
-        }
-        BlockState newWire = Blocks.REDSTONE_WIRE.getDefaultState();
-        newWire = newWire.with(RedstoneWireBlock.NORTH, stateOG.get(RedstoneWireBlock.NORTH));
-        newWire = newWire.with(RedstoneWireBlock.EAST, stateOG.get(RedstoneWireBlock.EAST));
-        newWire = newWire.with(RedstoneWireBlock.SOUTH, stateOG.get(RedstoneWireBlock.SOUTH));
-        newWire = newWire.with(RedstoneWireBlock.WEST, stateOG.get(RedstoneWireBlock.WEST));
-        // ok 
-        // build it!
-        if (newWire.isValidPosition(world, posCurrent) && stateCurrent.getMaterial().isReplaceable()) {
-          if (world.setBlockState(posCurrent, newWire)) {
-            if (!player.isCreative()) {
-              held.shrink(1);
-            }
-            break;
+      buildRedstone(player, pos, world, stateOG, held);
+    }
+  }
+
+  private void buildRedstone(PlayerEntity player, BlockPos pos, World world, BlockState stateOG, ItemStack held) {
+    //then ooo hot stuff 
+    Direction facing = player.getHorizontalFacing();
+    for (int i = 1; i < ConfigManager.REDSTONEBUILDRANGE.get(); i++) {
+      // 
+      BlockPos posCurrent = pos.offset(facing, i);
+      BlockState stateCurrent = world.getBlockState(posCurrent);
+      if (stateCurrent.getBlock() == Blocks.REDSTONE_WIRE) {
+        continue;//keep going to the next one this is ok to pass
+      }
+      BlockState newWire = Blocks.REDSTONE_WIRE.getDefaultState();
+      newWire = newWire.with(RedstoneWireBlock.NORTH, stateOG.get(RedstoneWireBlock.NORTH));
+      newWire = newWire.with(RedstoneWireBlock.EAST, stateOG.get(RedstoneWireBlock.EAST));
+      newWire = newWire.with(RedstoneWireBlock.SOUTH, stateOG.get(RedstoneWireBlock.SOUTH));
+      newWire = newWire.with(RedstoneWireBlock.WEST, stateOG.get(RedstoneWireBlock.WEST));
+      // ok 
+      // build it!
+      if (newWire.isValidPosition(world, posCurrent) && stateCurrent.getMaterial().isReplaceable()) {
+        if (world.setBlockState(posCurrent, newWire)) {
+          if (!player.isCreative()) {
+            held.shrink(1);
           }
-        }
-        else {
-          // its not valid here, so break out, dont skip gaps
           break;
         }
+      }
+      else {
+        // its not valid here, so break out, dont skip gaps
+        break;
+      }
+    }
+  }
+
+  private void buildLadder(PlayerEntity player, BlockPos pos, World world, BlockState stateOG, ItemStack held) {
+    //then ooo hot stuff 
+    for (int i = 1; i < ConfigManager.LADDERBUILDRANGE.get(); i++) {
+      // 
+      BlockPos posCurrent = (player.rotationPitch < 0) ? pos.up(i) : pos.down(i);
+      BlockState stateCurrent = world.getBlockState(posCurrent);
+      if (//!stateCurrent.isAir() && stateCurrent.getBlock() != Blocks.WATER &&
+      stateCurrent.getBlock() == Blocks.LADDER) {
+        continue;// this is a ladder, skip to next
+      }
+      BlockState newLadder = Blocks.LADDER.getDefaultState();
+      newLadder = newLadder.with(LadderBlock.FACING, stateOG.get(LadderBlock.FACING));
+      // ok 
+      // build it!
+      boolean replaceHere = stateCurrent.getMaterial().isReplaceable();
+      if (replaceHere && (ConfigManager.LADDERBUILDINVALID.get()
+          || newLadder.isValidPosition(world, posCurrent))) {
+        //water logged if its wet
+        boolean isWater = world.getFluidState(posCurrent).getFluid() == Fluids.WATER
+            || world.getFluidState(posCurrent).getFluid() == Fluids.FLOWING_WATER;
+        newLadder = newLadder.with(BlockStateProperties.WATERLOGGED, Boolean.valueOf(isWater));
+        if (world.setBlockState(posCurrent, newLadder)) {
+          if (!player.isCreative()) {
+            held.shrink(1);
+          }
+          break;
+        }
+      }
+      else {
+        //config is false AND its not valid here, so break out, dont skip gaps
+        break;
+      }
+    }
+  }
+
+  private void buildRails(PlayerEntity player, BlockPos pos, World world, ItemStack held) {
+    Direction facing = player.getHorizontalFacing();
+    // ok then 
+    //      int yLevel = pos.getY();
+    //build 
+    for (int i = 1; i < ConfigManager.RAILSAUTOBUILDRANGE.get(); i++) {
+      BlockPos posCurrent = pos.offset(facing, i);
+      //UP AND DOWN HILLS
+      //        if(this.isRail(item))
+      //here? 
+      BlockState newRail = Block.getBlockFromItem(held.getItem()).getDefaultState();
+      BlockState stateCurrent = world.getBlockState(posCurrent);
+      if (this.isRail(stateCurrent)) {
+        continue;//can skip past rails
+      }
+      boolean replaceHere = stateCurrent.getMaterial().isReplaceable();
+      if (replaceHere
+          && newRail.isValidPosition(world, posCurrent)) {
+        if (world.setBlockState(posCurrent, newRail)) {
+          if (!player.isCreative()) {
+            held.shrink(1);
+          }
+          break;
+        }
+      }
+      else {
+        // its not valid here, so break out, dont skip gaps
+        break;
       }
     }
   }
