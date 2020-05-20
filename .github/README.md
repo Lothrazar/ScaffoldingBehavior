@@ -1,5 +1,4 @@
 
-- some baseline classes for new mod setup
 
 - Download a Forge MDK from [http://files.minecraftforge.net/](http://files.minecraftforge.net)
  
