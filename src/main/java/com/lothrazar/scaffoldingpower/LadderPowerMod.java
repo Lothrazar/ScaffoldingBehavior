@@ -1,65 +1,52 @@
 package com.lothrazar.scaffoldingpower;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import com.lothrazar.scaffoldingpower.setup.ClientProxy;
-import com.lothrazar.scaffoldingpower.setup.IProxy;
-import com.lothrazar.scaffoldingpower.setup.ServerProxy;
+import io.netty.handler.codec.http2.Http2FrameLogger.Direction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 // TODO: The value here should match an entry in the META-INF/mods.toml file
 // TODO: Also search and replace it in build.gradle
-@Mod(LadderPowerMod.MODID)
+@Mod(modid = LadderPowerMod.MODID, certificateFingerprint = "@FINGERPRINT@", updateJSON = "https://raw.githubusercontent.com/Lothrazar/ScaffoldingBehavior/trunk/1.12/update.json")
 public class LadderPowerMod {
 
   public static final String MODID = "scaffoldingpower";
   public static final String certificateFingerprint = "@FINGERPRINT@";
-  public static final IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
-  public static final Logger LOGGER = LogManager.getLogger();
   public static ConfigManager config;
 
   public LadderPowerMod() {
-    // Register the setup method for modloading
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+    // Register the setup method for modloading 
     //only for server starting
     MinecraftForge.EVENT_BUS.register(this);
     config = new ConfigManager(FMLPaths.CONFIGDIR.get().resolve(MODID + ".toml"));
   }
 
-  private void setup(final FMLCommonSetupEvent event) {
-    //now all blocks/items exist 
-  }
-
   @SubscribeEvent
   public void onInteract(PlayerInteractEvent.RightClickBlock event) {
-    PlayerEntity player = event.getPlayer();
+    EntityPlayer player = event.getEntityPlayer();
     //vine, ironbars, powered rails
     BlockPos pos = event.getPos();
     World world = event.getWorld();
-    BlockState stateOG = world.getBlockState(pos);
+    IBlockState stateOG = world.getBlockState(pos);
     ItemStack held = event.getItemStack();
     if (ConfigManager.RAILBUILD.get() && this.isRail(held.getItem()) &&
         this.isRail(stateOG.getBlock().asItem())) {
@@ -81,11 +68,11 @@ public class LadderPowerMod {
     for (int i = 1; i < ConfigManager.REDSTONEBUILDRANGE.get(); i++) {
       // 
       BlockPos posCurrent = pos.offset(facing, i);
-      BlockState stateCurrent = world.getBlockState(posCurrent);
+      IBlockState stateCurrent = world.getBlockState(posCurrent);
       if (stateCurrent.getBlock() == Blocks.REDSTONE_WIRE) {
         continue;//keep going to the next one this is ok to pass
       }
-      BlockState newWire = Blocks.REDSTONE_WIRE.getDefaultState();
+      IBlockState newWire = Blocks.REDSTONE_WIRE.getDefaultState();
       newWire = newWire.with(RedstoneWireBlock.NORTH, stateOG.get(RedstoneWireBlock.NORTH));
       newWire = newWire.with(RedstoneWireBlock.EAST, stateOG.get(RedstoneWireBlock.EAST));
       newWire = newWire.with(RedstoneWireBlock.SOUTH, stateOG.get(RedstoneWireBlock.SOUTH));
@@ -112,12 +99,12 @@ public class LadderPowerMod {
     for (int i = 1; i < ConfigManager.LADDERBUILDRANGE.get(); i++) {
       // 
       BlockPos posCurrent = (player.rotationPitch < 0) ? pos.up(i) : pos.down(i);
-      BlockState stateCurrent = world.getBlockState(posCurrent);
+      IBlockState stateCurrent = world.getBlockState(posCurrent);
       if (//!stateCurrent.isAir() && stateCurrent.getBlock() != Blocks.WATER &&
       stateCurrent.getBlock() == Blocks.LADDER) {
         continue;// this is a ladder, skip to next
       }
-      BlockState newLadder = Blocks.LADDER.getDefaultState();
+      IBlockState newLadder = Blocks.LADDER.getDefaultState();
       newLadder = newLadder.with(LadderBlock.FACING, stateOG.get(LadderBlock.FACING));
       // ok 
       // build it!
@@ -152,8 +139,8 @@ public class LadderPowerMod {
       //UP AND DOWN HILLS
       //        if(this.isRail(item))
       //here? 
-      BlockState newRail = Block.getBlockFromItem(held.getItem()).getDefaultState();
-      BlockState stateCurrent = world.getBlockState(posCurrent);
+      IBlockState newRail = Block.getBlockFromItem(held.getItem()).getDefaultState();
+      IBlockState stateCurrent = world.getBlockState(posCurrent);
       if (this.isRail(stateCurrent)) {
         continue;//can skip past rails
       }
