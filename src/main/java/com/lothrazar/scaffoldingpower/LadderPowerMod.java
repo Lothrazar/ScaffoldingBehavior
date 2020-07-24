@@ -2,9 +2,6 @@ package com.lothrazar.scaffoldingpower;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.lothrazar.scaffoldingpower.setup.ClientProxy;
-import com.lothrazar.scaffoldingpower.setup.IProxy;
-import com.lothrazar.scaffoldingpower.setup.ServerProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -24,20 +21,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 
-// TODO: The value here should match an entry in the META-INF/mods.toml file
-// TODO: Also search and replace it in build.gradle
 @Mod(LadderPowerMod.MODID)
 public class LadderPowerMod {
 
   public static final String MODID = "scaffoldingpower";
-  public static final String certificateFingerprint = "@FINGERPRINT@";
-  public static final IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
+  //  public static final String certificateFingerprint = "@FINGERPRINT@";
+  //  public static final IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
   public static final Logger LOGGER = LogManager.getLogger();
   public static ConfigManager config;
 
