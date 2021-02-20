@@ -35,11 +35,6 @@ public class DoorEvents {
   }
 
   private void doubleDoors(World world, BlockPos originalDoorPos, BlockState originalDoorState) {
-    //
-    //CONFIG
-    //
-    //
-    // TODO Auto-generated method stub
     Direction doorFacing = originalDoorState.get(DoorBlock.FACING);
     //where is the other door located
     BlockPos hingeCcw = originalDoorPos.offset(originalDoorState.get(DoorBlock.HINGE) == DoorHingeSide.RIGHT ? doorFacing.rotateYCCW() : doorFacing.rotateY());

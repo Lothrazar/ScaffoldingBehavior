@@ -1,27 +1,31 @@
 
 #General settings
-[ladderpower]
+[scaffoldingpower]
 
-	[ladderpower.ladder]
+	[scaffoldingpower.doors]
+		#Enable DoubleDoor opening feature
+		doubleOpen = true
+
+	[scaffoldingpower.ladder]
 		#Auto Ladder Building: Place a ladder on a ladder and it will build up or down depending where player is facing
 		autoBuild = true
 		#Auto Ladder Building: vertical range away from source placement
-		#Range: 1 ~ 64
-		autoBuildRange = 16
+		#Range: 1 ~ 256
+		autoBuildRange = 128
 		#Auto Ladder Building: true means allow invalid building places such as floating in midair
-		autoBuildInvalid = true
+		autoBuildInvalid = false
 
-	[ladderpower.rails]
+	[scaffoldingpower.rails]
 		#Auto Rails Building: horizontal range away from source placement
-		#Range: 1 ~ 64
-		autoBuildRange = 16
+		#Range: 1 ~ 256
+		autoBuildRange = 128
 		#Auto Rail Building: Place a rail on a rail and it will build out depending where player is facing
 		autoBuild = true
 
-	[ladderpower.redstone]
+	[scaffoldingpower.redstone]
 		#Auto redstone Building: Place dust on existing dust and it will build out depending where player is facing
 		autoBuild = true
 		#Auto redstone Building: range away from source placement
-		#Range: 1 ~ 64
-		autoBuildRange = 16
+		#Range: 1 ~ 256
+		autoBuildRange = 128
 
