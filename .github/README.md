@@ -1,4 +1,4 @@
-# Scaffolding Behavior
+# Scaffolding 
 
 A Minecraft mod built on the Forge API [https://files.minecraftforge.net/](https://files.minecraftforge.net)
 
@@ -15,7 +15,6 @@ Project page with releases: https://www.curseforge.com/minecraft/mc-mods/scaffol
 [![Support](https://img.shields.io/badge/Patreon-Support-orange.svg?logo=Patreon)](https://www.patreon.com/Lothrazar)
 
 
- 
 
 # Servers
 
