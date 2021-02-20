@@ -55,7 +55,8 @@ public class RailEvents {
       BlockState newRail = Block.getBlockFromItem(held.getItem()).getDefaultState();
       BlockState stateCurrent = world.getBlockState(posCurrent);
       if (this.isRail(stateCurrent)) {
-        continue;//can skip past rails
+        continue;
+        //can skip past rails
       }
       boolean replaceHere = stateCurrent.getMaterial().isReplaceable();
       if (replaceHere

@@ -8,15 +8,15 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(LadderPowerMod.MODID)
-public class LadderPowerMod {
+@Mod(BuilderMod.MODID)
+public class BuilderMod {
 
   public static final String MODID = "scaffoldingpower";
   public static final Logger LOGGER = LogManager.getLogger();
-  public static ConfigManager config;
+  public static ConfigManager CONFIG;
 
-  public LadderPowerMod() {
-    config = new ConfigManager(FMLPaths.CONFIGDIR.get().resolve(MODID + ".toml"));
+  public BuilderMod() {
+    CONFIG = new ConfigManager(FMLPaths.CONFIGDIR.get().resolve(MODID + ".toml"));
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
   }
 

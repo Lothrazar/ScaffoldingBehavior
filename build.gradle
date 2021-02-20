@@ -12,6 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'checkstyle'
 
 import net.minecraftforge.gradle.common.task.SignJar
 import groovy.json.JsonSlurper
@@ -22,6 +23,14 @@ group = 'com.lothrazar.scaffoldingpower' // http://maven.apache.org/guides/mini/
 archivesBaseName = 'scaffoldingpower'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
+checkstyle {
+    toolVersion '8.23'
+    config project.resources.text.fromUri("https://raw.githubusercontent.com/Lothrazar/Cyclic/trunk/1.16/checkstyle.xml")
+}
+checkstyleMain {
+    source ='src/main/java'
+}
 
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
@@ -185,14 +194,10 @@ task signJar(type: SignJar, dependsOn: jar) {
     outputFile = jar.archivePath
 }
 
-build.dependsOn signJar
-
 task copyJar(type: Copy) {
     from jar
     into "${dist_folder}"
 }
-
-build.finalizedBy copyJar
 
 cleanJar {
   delete 'build/libs'

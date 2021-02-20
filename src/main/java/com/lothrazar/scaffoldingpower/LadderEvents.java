@@ -40,7 +40,8 @@ public class LadderEvents {
       BlockState stateCurrent = world.getBlockState(posCurrent);
       if (//!stateCurrent.isAir() && stateCurrent.getBlock() != Blocks.WATER &&
       stateCurrent.getBlock() == Blocks.LADDER) {
-        continue;// this is a ladder, skip to next
+        continue;
+        // this is a ladder, skip to next
       }
       BlockState newLadder = Blocks.LADDER.getDefaultState();
       newLadder = newLadder.with(LadderBlock.FACING, stateOG.get(LadderBlock.FACING));

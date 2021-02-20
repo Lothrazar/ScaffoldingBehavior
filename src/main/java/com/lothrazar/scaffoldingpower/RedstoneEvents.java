@@ -39,7 +39,8 @@ public class RedstoneEvents {
       BlockPos posCurrent = pos.offset(facing, i);
       BlockState stateCurrent = world.getBlockState(posCurrent);
       if (stateCurrent.getBlock() == Blocks.REDSTONE_WIRE) {
-        continue;//keep going to the next one this is ok to pass
+        continue;
+        //keep going to the next one this is ok to pass
       }
       BlockState newWire = Blocks.REDSTONE_WIRE.getDefaultState();
       newWire = newWire.with(RedstoneWireBlock.NORTH, stateOG.get(RedstoneWireBlock.NORTH));

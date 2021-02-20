@@ -25,7 +25,7 @@ public class ConfigManager {
   }
 
   private static void initConfig() {
-    COMMON_BUILDER.comment("General settings").push(LadderPowerMod.MODID);
+    COMMON_BUILDER.comment("General settings").push(BuilderMod.MODID);
     DOUBLEDOOR = COMMON_BUILDER.comment("Enable DoubleDoor opening feature")
         .define("doors.doubleOpen", true);
     REDSTONEBUILD = COMMON_BUILDER.comment("Auto redstone Building: Place dust on existing dust and it will build out depending where player is facing")
