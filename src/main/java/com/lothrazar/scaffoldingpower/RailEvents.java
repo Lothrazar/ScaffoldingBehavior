@@ -1,15 +1,14 @@
 package com.lothrazar.scaffoldingpower;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -20,19 +19,19 @@ public class RailEvents {
     if (!ConfigManager.RAILBUILD.get()) {
       return;
     }
-    PlayerEntity player = event.getPlayer();
+    Player player = event.getPlayer();
     //vine, ironbars, powered rails
     BlockPos pos = event.getPos();
-    World world = event.getWorld();
+    Level world = event.getWorld();
     BlockState stateOG = world.getBlockState(pos);
     ItemStack held = event.getItemStack();
-    if (this.isRail(held.getItem()) &&
-        this.isRail(stateOG.getBlock().asItem())) {
+    if (this.isRail(held) &&
+        this.isRail(stateOG)) {
       BlockPos endPos = buildRails(player, pos, world, held);
       if (endPos != null) {
-        BlockPos fromUp = buildRails(player, endPos.up(), world, held);
+        BlockPos fromUp = buildRails(player, endPos.above(), world, held);
         if (fromUp != null) {
-          buildRails(player, endPos.down(), world, held);
+          buildRails(player, endPos.below(), world, held);
         }
       }
     }
@@ -44,15 +43,15 @@ public class RailEvents {
    * 
    *         returns position if it failed
    */
-  private BlockPos buildRails(PlayerEntity player, BlockPos pos, World world, ItemStack held) {
-    Direction facing = player.getHorizontalFacing();
+  private BlockPos buildRails(Player player, BlockPos pos, Level world, ItemStack held) {
+    Direction facing = player.getDirection();
     //build 
     BlockPos posCurrent = pos;
     BlockPos previous = pos;
     for (int i = 1; i < ConfigManager.RAILSAUTOBUILDRANGE.get(); i++) {
       previous = posCurrent;
-      posCurrent = pos.offset(facing, i);
-      BlockState newRail = Block.getBlockFromItem(held.getItem()).getDefaultState();
+      posCurrent = pos.relative(facing, i);
+      BlockState newRail = Block.byItem(held.getItem()).defaultBlockState();
       BlockState stateCurrent = world.getBlockState(posCurrent);
       if (this.isRail(stateCurrent)) {
         continue;
@@ -60,8 +59,8 @@ public class RailEvents {
       }
       boolean replaceHere = stateCurrent.getMaterial().isReplaceable();
       if (replaceHere
-          && newRail.isValidPosition(world, posCurrent)) {
-        if (world.setBlockState(posCurrent, newRail)) {
+          && newRail.canSurvive(world, posCurrent)) {
+        if (world.setBlockAndUpdate(posCurrent, newRail)) {
           if (!player.isCreative()) {
             held.shrink(1);
           }
@@ -78,11 +77,11 @@ public class RailEvents {
     return null;
   }
 
-  private boolean isRail(BlockState item) {
-    return item.getBlock().isIn(BlockTags.RAILS);
+  private boolean isRail(BlockState block) {
+    return block.is(BlockTags.RAILS);
   }
 
-  private boolean isRail(Item item) {
-    return item.isIn(ItemTags.RAILS);
+  private boolean isRail(ItemStack item) {
+    return item.is(ItemTags.RAILS);
   }
 }

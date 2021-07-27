@@ -1,14 +1,14 @@
 package com.lothrazar.scaffoldingpower;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.properties.DoorHingeSide;
-import net.minecraft.state.properties.DoubleBlockHalf;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.properties.DoorHingeSide;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -19,12 +19,12 @@ public class DoorEvents {
     if (ConfigManager.DOUBLEDOOR.get() == false) {
       return;
     }
-    PlayerEntity player = event.getPlayer();
+    Player player = event.getPlayer();
     //vine, ironbars, powered rails
     BlockPos pos = event.getPos();
-    World world = event.getWorld();
+    Level world = event.getWorld();
     BlockState stateOG = world.getBlockState(pos);
-    if (!player.isSneaking() && this.isWoodenDoor(stateOG)) {
+    if (!player.isShiftKeyDown() && this.isWoodenDoor(stateOG)) {
       //double door
       this.doubleDoors(world, pos, stateOG);
     }
@@ -34,25 +34,25 @@ public class DoorEvents {
     return stateOG.getBlock() instanceof DoorBlock && stateOG.getBlock() != Blocks.IRON_DOOR;
   }
 
-  private void doubleDoors(World world, BlockPos originalDoorPos, BlockState originalDoorState) {
-    Direction doorFacing = originalDoorState.get(DoorBlock.FACING);
+  private void doubleDoors(Level world, BlockPos originalDoorPos, BlockState originalDoorState) {
+    Direction doorFacing = originalDoorState.getValue(DoorBlock.FACING);
     //where is the other door located
-    BlockPos hingeCcw = originalDoorPos.offset(originalDoorState.get(DoorBlock.HINGE) == DoorHingeSide.RIGHT ? doorFacing.rotateYCCW() : doorFacing.rotateY());
-    BlockPos secondDoorPos = originalDoorState.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? hingeCcw : hingeCcw.down();
+    BlockPos hingeCcw = originalDoorPos.relative(originalDoorState.getValue(DoorBlock.HINGE) == DoorHingeSide.RIGHT ? doorFacing.getCounterClockWise() : doorFacing.getClockWise());
+    BlockPos secondDoorPos = originalDoorState.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? hingeCcw : hingeCcw.below();
     BlockState secondDoorState = world.getBlockState(secondDoorPos);
     //are they aligned the same 
-    if (secondDoorState.get(DoorBlock.HINGE) == originalDoorState.get(DoorBlock.HINGE)) {
+    if (secondDoorState.getValue(DoorBlock.HINGE) == originalDoorState.getValue(DoorBlock.HINGE)) {
       return;
     }
     //both match same block  type(both oak, etc)
     if (secondDoorState.getBlock() == originalDoorState.getBlock() &&
     //both have same facing state
-        secondDoorState.get(DoorBlock.FACING) == doorFacing &&
+        secondDoorState.getValue(DoorBlock.FACING) == doorFacing &&
         //both have same open state
-        secondDoorState.get(DoorBlock.OPEN) == originalDoorState.get(DoorBlock.OPEN)) {
+        secondDoorState.getValue(DoorBlock.OPEN) == originalDoorState.getValue(DoorBlock.OPEN)) {
       // so we have two matching doors, such as two oak doors, facing correctly
       //cycle the state 
-      world.setBlockState(secondDoorPos, secondDoorState.func_235896_a_(DoorBlock.OPEN));
+      world.setBlockAndUpdate(secondDoorPos, secondDoorState.cycle(DoorBlock.OPEN));
     }
   }
 }

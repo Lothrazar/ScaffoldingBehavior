@@ -1,14 +1,14 @@
 package com.lothrazar.scaffoldingpower;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -19,10 +19,10 @@ public class RedstoneEvents {
     if (!ConfigManager.REDSTONEBUILD.get()) {
       return;
     }
-    PlayerEntity player = event.getPlayer();
+    Player player = event.getPlayer();
     //vine, ironbars, powered rails
     BlockPos pos = event.getPos();
-    World world = event.getWorld();
+    Level world = event.getWorld();
     BlockState stateOG = world.getBlockState(pos);
     ItemStack held = event.getItemStack();
     //redstone time
@@ -31,26 +31,26 @@ public class RedstoneEvents {
     }
   }
 
-  private void buildRedstone(PlayerEntity player, BlockPos pos, World world, BlockState stateOG, ItemStack held) {
+  private void buildRedstone(Player player, BlockPos pos, Level world, BlockState stateOG, ItemStack held) {
     //then ooo hot stuff 
-    Direction facing = player.getHorizontalFacing();
+    Direction facing = player.getDirection();
     for (int i = 1; i < ConfigManager.REDSTONEBUILDRANGE.get(); i++) {
       // 
-      BlockPos posCurrent = pos.offset(facing, i);
+      BlockPos posCurrent = pos.relative(facing, i);
       BlockState stateCurrent = world.getBlockState(posCurrent);
       if (stateCurrent.getBlock() == Blocks.REDSTONE_WIRE) {
         continue;
         //keep going to the next one this is ok to pass
       }
-      BlockState newWire = Blocks.REDSTONE_WIRE.getDefaultState();
-      newWire = newWire.with(RedstoneWireBlock.NORTH, stateOG.get(RedstoneWireBlock.NORTH));
-      newWire = newWire.with(RedstoneWireBlock.EAST, stateOG.get(RedstoneWireBlock.EAST));
-      newWire = newWire.with(RedstoneWireBlock.SOUTH, stateOG.get(RedstoneWireBlock.SOUTH));
-      newWire = newWire.with(RedstoneWireBlock.WEST, stateOG.get(RedstoneWireBlock.WEST));
+      BlockState newWire = Blocks.REDSTONE_WIRE.defaultBlockState();
+      newWire = newWire.setValue(RedStoneWireBlock.NORTH, stateOG.getValue(RedStoneWireBlock.NORTH));
+      newWire = newWire.setValue(RedStoneWireBlock.EAST, stateOG.getValue(RedStoneWireBlock.EAST));
+      newWire = newWire.setValue(RedStoneWireBlock.SOUTH, stateOG.getValue(RedStoneWireBlock.SOUTH));
+      newWire = newWire.setValue(RedStoneWireBlock.WEST, stateOG.getValue(RedStoneWireBlock.WEST));
       // ok 
       // build it!
-      if (newWire.isValidPosition(world, posCurrent) && stateCurrent.getMaterial().isReplaceable()) {
-        if (world.setBlockState(posCurrent, newWire)) {
+      if (newWire.canSurvive(world, posCurrent) && stateCurrent.getMaterial().isReplaceable()) {
+        if (world.setBlockAndUpdate(posCurrent, newWire)) {
           if (!player.isCreative()) {
             held.shrink(1);
           }

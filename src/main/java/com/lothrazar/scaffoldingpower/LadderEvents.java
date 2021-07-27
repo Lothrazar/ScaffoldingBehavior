@@ -1,15 +1,15 @@
 package com.lothrazar.scaffoldingpower;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LadderBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -20,10 +20,10 @@ public class LadderEvents {
     if (!ConfigManager.LADDERBUILD.get()) {
       return;
     }
-    PlayerEntity player = event.getPlayer();
+    Player player = event.getPlayer();
     //vine, ironbars, powered rails
     BlockPos pos = event.getPos();
-    World world = event.getWorld();
+    Level world = event.getWorld();
     BlockState stateOG = world.getBlockState(pos);
     ItemStack held = event.getItemStack();
     //if i used ladder on top of a ladder
@@ -32,29 +32,29 @@ public class LadderEvents {
     }
   }
 
-  private void buildLadder(PlayerEntity player, BlockPos pos, World world, BlockState stateOG, ItemStack held) {
+  private void buildLadder(Player player, BlockPos pos, Level world, BlockState stateOG, ItemStack held) {
     //then ooo hot stuff 
     for (int i = 1; i < ConfigManager.LADDERBUILDRANGE.get(); i++) {
-      // 
-      BlockPos posCurrent = (player.rotationPitch < 0) ? pos.up(i) : pos.down(i);
+      // TODO changed in 1.17.1
+      BlockPos posCurrent = (player.getRotationVector().x < 0) ? pos.above(i) : pos.below(i);
       BlockState stateCurrent = world.getBlockState(posCurrent);
       if (//!stateCurrent.isAir() && stateCurrent.getBlock() != Blocks.WATER &&
       stateCurrent.getBlock() == Blocks.LADDER) {
         continue;
         // this is a ladder, skip to next
       }
-      BlockState newLadder = Blocks.LADDER.getDefaultState();
-      newLadder = newLadder.with(LadderBlock.FACING, stateOG.get(LadderBlock.FACING));
+      BlockState newLadder = Blocks.LADDER.defaultBlockState();
+      newLadder = newLadder.setValue(LadderBlock.FACING, stateOG.getValue(LadderBlock.FACING));
       // ok 
       // build it!
       boolean replaceHere = stateCurrent.getMaterial().isReplaceable();
       if (replaceHere && (ConfigManager.LADDERBUILDINVALID.get()
-          || newLadder.isValidPosition(world, posCurrent))) {
+          || newLadder.canSurvive(world, posCurrent))) {
         //water logged if its wet
-        boolean isWater = world.getFluidState(posCurrent).getFluid() == Fluids.WATER
-            || world.getFluidState(posCurrent).getFluid() == Fluids.FLOWING_WATER;
-        newLadder = newLadder.with(BlockStateProperties.WATERLOGGED, Boolean.valueOf(isWater));
-        if (world.setBlockState(posCurrent, newLadder)) {
+        boolean isWater = world.getFluidState(posCurrent).getType() == Fluids.WATER
+            || world.getFluidState(posCurrent).getType() == Fluids.FLOWING_WATER;
+        newLadder = newLadder.setValue(BlockStateProperties.WATERLOGGED, Boolean.valueOf(isWater));
+        if (world.setBlockAndUpdate(posCurrent, newLadder)) {
           if (!player.isCreative()) {
             held.shrink(1);
           }
