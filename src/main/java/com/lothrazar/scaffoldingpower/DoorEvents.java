@@ -1,14 +1,14 @@
 package com.lothrazar.scaffoldingpower;
 
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -19,10 +19,10 @@ public class DoorEvents {
     if (ConfigManager.DOUBLEDOOR.get() == false) {
       return;
     }
-    Player player = event.getPlayer();
+    Player player = event.getEntity();
     //vine, ironbars, powered rails
     BlockPos pos = event.getPos();
-    Level world = event.getWorld();
+    Level world = event.getLevel();
     BlockState stateOG = world.getBlockState(pos);
     if (!player.isShiftKeyDown() && this.isWoodenDoor(stateOG)) {
       //double door
