@@ -43,7 +43,7 @@ public class DoorEvents {
     BlockPos secondDoorPos = originalDoorState.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? hingeCcw : hingeCcw.below();
     BlockState secondDoorState = world.getBlockState(secondDoorPos);
     //are they aligned the same 
-    if(isWoodenDoor(secondDoorState)) { //checks if neignbour block acctually is a door
+    if(isWoodenDoor(secondDoorState)) { //checks if neignbour block actually is a door
 	    	if (secondDoorState.getValue(DoorBlock.HINGE) == originalDoorState.getValue(DoorBlock.HINGE)) {
 	  	      return;
 	  	    }
