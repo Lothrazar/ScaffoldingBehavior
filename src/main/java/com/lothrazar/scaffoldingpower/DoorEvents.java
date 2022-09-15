@@ -24,10 +24,12 @@ public class DoorEvents {
     BlockPos pos = event.getPos();
     Level world = event.getLevel();
     BlockState stateOG = world.getBlockState(pos);
-    if (!player.isShiftKeyDown() && this.isWoodenDoor(stateOG)) {
-      //double door
-      this.doubleDoors(world, pos, stateOG);
-    }
+    if(!world.isClientSide) { //prevents clients from crashing
+	    	if (!player.isShiftKeyDown() && isWoodenDoor(stateOG)) {
+	  	      //double door
+	  	      doubleDoors(world, pos, stateOG);
+	  	    }
+	    }
   }
 
   private boolean isWoodenDoor(BlockState stateOG) {
@@ -41,9 +43,11 @@ public class DoorEvents {
     BlockPos secondDoorPos = originalDoorState.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? hingeCcw : hingeCcw.below();
     BlockState secondDoorState = world.getBlockState(secondDoorPos);
     //are they aligned the same 
-    if (secondDoorState.getValue(DoorBlock.HINGE) == originalDoorState.getValue(DoorBlock.HINGE)) {
-      return;
-    }
+    if(isWoodenDoor(secondDoorState)) { //checks if neignbour block acctually is a door
+	    	if (secondDoorState.getValue(DoorBlock.HINGE) == originalDoorState.getValue(DoorBlock.HINGE)) {
+	  	      return;
+	  	    }
+	    }
     //both match same block  type(both oak, etc)
     if (secondDoorState.getBlock() == originalDoorState.getBlock() &&
     //both have same facing state
