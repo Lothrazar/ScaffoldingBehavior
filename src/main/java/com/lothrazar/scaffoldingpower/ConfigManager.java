@@ -1,17 +1,13 @@
 package com.lothrazar.scaffoldingpower;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
-import java.nio.file.Path;
+import com.lothrazar.library.config.ConfigTemplate;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
-public class ConfigManager {
+public class ConfigManager extends ConfigTemplate {
 
-  private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
-  private static ForgeConfigSpec COMMON_CONFIG;
-  //  public static BooleanValue FASTUP;
+  private static ForgeConfigSpec CONFIG;
   public static BooleanValue LADDERBUILD;
   public static BooleanValue LADDERBUILDINVALID;
   public static IntValue LADDERBUILDRANGE;
@@ -21,38 +17,29 @@ public class ConfigManager {
   public static BooleanValue DOUBLEDOOR;
   public static IntValue REDSTONEBUILDRANGE;
   static {
-    initConfig();
-  }
-
-  private static void initConfig() {
-    COMMON_BUILDER.comment("General settings").push(BuilderMod.MODID);
-    DOUBLEDOOR = COMMON_BUILDER.comment("Enable DoubleDoor opening feature")
+    final ForgeConfigSpec.Builder BUILDER = builder();
+    BUILDER.comment("General settings").push(BuilderMod.MODID);
+    DOUBLEDOOR = BUILDER.comment("Enable DoubleDoor opening feature")
         .define("doors.doubleOpen", true);
-    REDSTONEBUILD = COMMON_BUILDER.comment("Auto redstone Building: Place dust on existing dust and it will build out depending where player is facing")
+    REDSTONEBUILD = BUILDER.comment("Auto redstone Building: Place dust on existing dust and it will build out depending where player is facing")
         .define("redstone.autoBuild", true);
-    REDSTONEBUILDRANGE = COMMON_BUILDER.comment("Auto redstone Building: range away from source placement")
+    REDSTONEBUILDRANGE = BUILDER.comment("Auto redstone Building: range away from source placement")
         .defineInRange("redstone.autoBuildRange", 128, 1, 256);
-    RAILSAUTOBUILDRANGE = COMMON_BUILDER.comment("Auto Rails Building: horizontal range away from source placement")
+    RAILSAUTOBUILDRANGE = BUILDER.comment("Auto Rails Building: horizontal range away from source placement")
         .defineInRange("rails.autoBuildRange", 128, 1, 256);
-    RAILBUILD = COMMON_BUILDER.comment("Auto Rail Building: Place a rail on a rail and it will build out depending where player is facing")
+    RAILBUILD = BUILDER.comment("Auto Rail Building: Place a rail on a rail and it will build out depending where player is facing")
         .define("rails.autoBuild", true);
-    LADDERBUILD = COMMON_BUILDER.comment("Auto Ladder Building: Place a ladder on a ladder and it will build up or down depending where player is facing")
+    LADDERBUILD = BUILDER.comment("Auto Ladder Building: Place a ladder on a ladder and it will build up or down depending where player is facing")
         .define("ladder.autoBuild", true);
-    LADDERBUILDRANGE = COMMON_BUILDER.comment("Auto Ladder Building: vertical range away from source placement")
+    LADDERBUILDRANGE = BUILDER.comment("Auto Ladder Building: vertical range away from source placement")
         .defineInRange("ladder.autoBuildRange", 128, 1, 256);
-    LADDERBUILDINVALID = COMMON_BUILDER.comment("Auto Ladder Building: true means allow invalid building places such as floating in midair")
+    LADDERBUILDINVALID = BUILDER.comment("Auto Ladder Building: true means allow invalid building places such as floating in midair")
         .define("ladder.autoBuildInvalid", false);
-    COMMON_BUILDER.pop();
-    COMMON_CONFIG = COMMON_BUILDER.build();
+    BUILDER.pop();
+    CONFIG = BUILDER.build();
   }
 
-  public ConfigManager(Path path) {
-    final CommentedFileConfig configData = CommentedFileConfig.builder(path)
-        .sync()
-        .autosave()
-        .writingMode(WritingMode.REPLACE)
-        .build();
-    configData.load();
-    COMMON_CONFIG.setConfig(configData);
+  public ConfigManager() {
+    CONFIG.setConfig(setup(BuilderMod.MODID));
   }
 }

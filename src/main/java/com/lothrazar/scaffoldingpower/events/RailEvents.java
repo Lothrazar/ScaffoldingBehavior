@@ -1,5 +1,6 @@
-package com.lothrazar.scaffoldingpower;
+package com.lothrazar.scaffoldingpower.events;
 
+import com.lothrazar.scaffoldingpower.ConfigManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -25,8 +26,7 @@ public class RailEvents {
     Level world = event.getLevel();
     BlockState stateOG = world.getBlockState(pos);
     ItemStack held = event.getItemStack();
-    if (this.isRail(held) &&
-        this.isRail(stateOG)) {
+    if (this.isRail(held) && this.isRail(stateOG)) {
       BlockPos endPos = buildRails(player, pos, world, held);
       if (endPos != null) {
         BlockPos fromUp = buildRails(player, endPos.above(), world, held);
