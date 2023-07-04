@@ -50,7 +50,7 @@ public class RedstoneEvents {
       newWire = newWire.setValue(RedStoneWireBlock.WEST, stateOG.getValue(RedStoneWireBlock.WEST));
       // ok 
       // build it!
-      if (newWire.canSurvive(world, posCurrent) && stateCurrent.getMaterial().isReplaceable()) {
+      if (newWire.canSurvive(world, posCurrent) && stateCurrent.canBeReplaced()) {
         if (world.setBlockAndUpdate(posCurrent, newWire)) {
           if (!player.isCreative()) {
             held.shrink(1);

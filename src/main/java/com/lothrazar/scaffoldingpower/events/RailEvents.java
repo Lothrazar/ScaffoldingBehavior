@@ -57,7 +57,7 @@ public class RailEvents {
         continue;
         //can skip past rails
       }
-      boolean replaceHere = stateCurrent.getMaterial().isReplaceable();
+      boolean replaceHere = stateCurrent.canBeReplaced();
       if (replaceHere
           && newRail.canSurvive(world, posCurrent)) {
         if (world.setBlockAndUpdate(posCurrent, newRail)) {

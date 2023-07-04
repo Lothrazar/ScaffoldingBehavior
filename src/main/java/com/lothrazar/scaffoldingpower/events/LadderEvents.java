@@ -48,7 +48,7 @@ public class LadderEvents {
       newLadder = newLadder.setValue(LadderBlock.FACING, stateOG.getValue(LadderBlock.FACING));
       // ok 
       // build it!
-      boolean replaceHere = stateCurrent.getMaterial().isReplaceable();
+      boolean replaceHere = stateCurrent.canBeReplaced();
       if (replaceHere && (ConfigManager.LADDERBUILDINVALID.get()
           || newLadder.canSurvive(world, posCurrent))) {
         //water logged if its wet
