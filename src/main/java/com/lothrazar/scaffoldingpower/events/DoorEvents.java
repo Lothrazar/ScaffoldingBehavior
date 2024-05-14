@@ -41,6 +41,12 @@ public class DoorEvents {
     BlockPos hingeCcw = originalDoorPos.relative(originalDoorState.getValue(DoorBlock.HINGE) == DoorHingeSide.RIGHT ? doorFacing.getCounterClockWise() : doorFacing.getClockWise());
     BlockPos secondDoorPos = originalDoorState.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? hingeCcw : hingeCcw.below();
     BlockState secondDoorState = world.getBlockState(secondDoorPos);
+    //triple check they are doors
+    if (!secondDoorState.hasProperty(DoorBlock.OPEN) ||
+        !secondDoorState.hasProperty(DoorBlock.FACING) ||
+        !secondDoorState.hasProperty(DoorBlock.HINGE) || !originalDoorState.hasProperty(DoorBlock.HINGE)) {
+      return;
+    }
     //are they aligned the same 
     if (secondDoorState.getValue(DoorBlock.HINGE) == originalDoorState.getValue(DoorBlock.HINGE)) {
       return;
