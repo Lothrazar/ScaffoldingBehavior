@@ -6,10 +6,12 @@ import com.lothrazar.scaffoldingpower.events.DoorEvents;
 import com.lothrazar.scaffoldingpower.events.LadderEvents;
 import com.lothrazar.scaffoldingpower.events.RailEvents;
 import com.lothrazar.scaffoldingpower.events.RedstoneEvents;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(BuilderMod.MODID)
 public class BuilderMod {
@@ -17,15 +19,15 @@ public class BuilderMod {
   public static final String MODID = "scaffoldingpower";
   public static final Logger LOGGER = LogManager.getLogger();
 
-  public BuilderMod() {
-    new ConfigManager();
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+  public BuilderMod(IEventBus modEventBus, ModContainer modContainer) {
+    modContainer.registerConfig(ModConfig.Type.COMMON, ConfigManager.CONFIG);
+    modEventBus.addListener(this::setup);
   }
 
   private void setup(final FMLCommonSetupEvent event) {
-    MinecraftForge.EVENT_BUS.register(new DoorEvents());
-    MinecraftForge.EVENT_BUS.register(new LadderEvents());
-    MinecraftForge.EVENT_BUS.register(new RedstoneEvents());
-    MinecraftForge.EVENT_BUS.register(new RailEvents());
+    NeoForge.EVENT_BUS.register(new DoorEvents());
+    NeoForge.EVENT_BUS.register(new LadderEvents());
+    NeoForge.EVENT_BUS.register(new RedstoneEvents());
+    NeoForge.EVENT_BUS.register(new RailEvents());
   }
 }

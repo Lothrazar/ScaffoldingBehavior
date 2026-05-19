@@ -1,13 +1,12 @@
 package com.lothrazar.scaffoldingpower;
 
-import com.lothrazar.library.config.ConfigTemplate;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
+import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
 
-public class ConfigManager extends ConfigTemplate {
+public class ConfigManager {
 
-  private static ForgeConfigSpec CONFIG;
+  static final ModConfigSpec CONFIG;
   public static BooleanValue LADDERBUILD;
   public static BooleanValue LADDERBUILDINVALID;
   public static IntValue LADDERBUILDRANGE;
@@ -17,7 +16,7 @@ public class ConfigManager extends ConfigTemplate {
   public static BooleanValue DOUBLEDOOR;
   public static IntValue REDSTONEBUILDRANGE;
   static {
-    final ForgeConfigSpec.Builder BUILDER = builder();
+    final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     BUILDER.comment("General settings").push(BuilderMod.MODID);
     DOUBLEDOOR = BUILDER.comment("Enable DoubleDoor opening feature")
         .define("doors.doubleOpen", true);
@@ -37,9 +36,5 @@ public class ConfigManager extends ConfigTemplate {
         .define("ladder.autoBuildInvalid", false);
     BUILDER.pop();
     CONFIG = BUILDER.build();
-  }
-
-  public ConfigManager() {
-    CONFIG.setConfig(setup(BuilderMod.MODID));
   }
 }
