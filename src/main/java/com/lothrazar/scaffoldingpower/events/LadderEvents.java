@@ -2,14 +2,17 @@ package com.lothrazar.scaffoldingpower.events;
 
 import com.lothrazar.scaffoldingpower.ConfigManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -56,6 +59,10 @@ public class LadderEvents {
             || world.getFluidState(posCurrent).getType() == Fluids.FLOWING_WATER;
         newLadder = newLadder.setValue(BlockStateProperties.WATERLOGGED, Boolean.valueOf(isWater));
         if (world.setBlockAndUpdate(posCurrent, newLadder)) {
+          SoundType sound = newLadder.getSoundType();
+          world.playSound(player, posCurrent, sound.getPlaceSound(), SoundSource.BLOCKS,
+              (sound.getVolume() + 1.0F) / 2.0F, sound.getPitch() * 0.8F);
+          world.gameEvent(GameEvent.BLOCK_PLACE, posCurrent, GameEvent.Context.of(player, newLadder));
           if (!player.isCreative()) {
             held.shrink(1);
           }

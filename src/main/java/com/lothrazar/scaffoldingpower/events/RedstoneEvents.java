@@ -3,13 +3,16 @@ package com.lothrazar.scaffoldingpower.events;
 import com.lothrazar.scaffoldingpower.ConfigManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
@@ -52,6 +55,10 @@ public class RedstoneEvents {
       // build it!
       if (newWire.canSurvive(world, posCurrent) && stateCurrent.canBeReplaced()) {
         if (world.setBlockAndUpdate(posCurrent, newWire)) {
+          SoundType sound = newWire.getSoundType();
+          world.playSound(player, posCurrent, sound.getPlaceSound(), SoundSource.BLOCKS,
+              (sound.getVolume() + 1.0F) / 2.0F, sound.getPitch() * 0.8F);
+          world.gameEvent(GameEvent.BLOCK_PLACE, posCurrent, GameEvent.Context.of(player, newWire));
           if (!player.isCreative()) {
             held.shrink(1);
           }
